@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="library_big_scale_bg_color">@android:color/black</color>
+    <color name="library_big_scale_text_color">@android:color/white</color>
+    <color name="library_big_scale_text_bg_color">#55888888</color>
+    <color name="bg_title">#125980</color>
+    <color name="white">#ffffff</color>
+    <color name="grayText">#ff888888</color>
+
+    <color name="lib_selector_gray">#dedddd</color>
+    <color name="lib_selector_white">#ffffff</color>
+    <color name="lib_cancel_color">#000000</color>
+
+    <color name="lib_ok_cancel_title">#000000</color>
+    <color name="lib_ok_cancel_content">#000000</color>
+    <color name="lib_ok_cancel_ok_text">#0000ff</color>
+    <color name="lib_ok_cancel_cancel_text">#0000ff</color>
+</resources>

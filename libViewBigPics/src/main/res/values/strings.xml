@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LibraryBigScalePhotoViewAnimation</string>
+    <string name="lib_dia_choose_cancel">取消</string>
+    <string name="lib_ok_cancel_ok">确定</string>
+    <string name="lib_ok_cancel_cancel">取消</string>
+    <string name="lib_choose_title">图片</string>
+    <string name="lib_choose_right">完成</string>
+</resources>
