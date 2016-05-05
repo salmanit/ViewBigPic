@@ -1,28 +1,28 @@
 # ViewBigPics
-点击小图看大图，并可以放大缩小
+点击小图看大图，并可以放大缩小＜/br＞
 
-原地址是这里的https://github.com/brucetoo/ActivityAnimation
-因为里边的代码有些地方不符合我的需求，所以就修改了点东西。简单的说就是
-原来的，如果图片很小比如100*100的，我们点击后看大图他也显示的100*100，
-而我们需求看大图的时候要铺满屏幕，就是以屏幕宽为比列缩放。
+原地址是这里的https://github.com/brucetoo/ActivityAnimation ＜/br＞ 
+因为里边的代码有些地方不符合我的需求，所以就修改了点东西。简单的说就是 ＜/br＞ 
+原来的，如果图片很小比如100*100的，我们点击后看大图他也显示的100*100，＜/br＞
+而我们需求看大图的时候要铺满屏幕，就是以屏幕宽为比列缩放。＜/br＞
 
-这个库里默认使用了compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-所以如果你工程也用到的话可以不用再引用这个库拉
+这个库里默认使用了compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'＜/br＞
+所以如果你工程也用到的话可以不用再引用这个库拉＜/br＞
+＜/br＞
+使用 compile 'com.sage.bigscalephotoviewanim:libViewBigPics:1.0.7'＜/br＞
+＜/br＞
 
-使用 compile 'com.sage.bigscalephotoviewanim:libViewBigPics:1.0.+'
+最新版本1.0.4增加了一个库，库的地址我找不到了，网上的，就是选择图片的。image-chooser库，github上的地址找不到拉。＜/br＞
+还有用洪洋写的一个仿微信多图选择的，也整合到里边了。＜/br＞
+反正是和图片有关的，我打算都整合到一起，方便调用，免得添加一堆库。＜/br＞
+使用看demo就行，再不行看源码。＜/br＞
+＜/br＞
+默认viewpager的背景颜色是黑色的，索引文字是白色的，如要修改，可以重写以下2个字段＜/br＞
+<color name="library_big_scale_bg_color">@android:color/black</color>＜/br＞
+    <color name="library_big_scale_text_color">@android:color/white</color>＜/br＞
+＜/br＞＜/br＞＜/br＞
 
-
-最新版本1.0.4增加了一个库，库的地址我找不到了，网上的，就是选择图片的。image-chooser库，github上的地址找不到拉。
-还有用洪洋写的一个仿微信多图选择的，也整合到里边了。
-反正是和图片有关的，我打算都整合到一起，方便调用，免得添加一堆库。
-使用看demo就行，再不行看源码。haha。
-
-默认viewpager的背景颜色是黑色的，索引文字是白色的，如要修改，可以重写以下2个字段
-<color name="library_big_scale_bg_color">@android:color/black</color>
-    <color name="library_big_scale_text_color">@android:color/white</color>
-
-
- 点击事件,如果只有一张图，可以只传2个参数， KEY_IMAGE_LIST和KEY_IMAGE_INFO
+ 点击事件,如果只有一张图，可以只传2个参数， KEY_IMAGE_LIST和KEY_IMAGE_INFO＜/br＞
  @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if(view.isEnabled()) {
@@ -59,7 +59,7 @@
         }
     }
 
-简单的adapter，其中注释掉的为item就是张图，后边那个为item控件比较多的使用方法
+简单的adapter，其中注释掉的为item就是张图，后边那个为item控件比较多的使用方法＜/br＞
     public class AAadapter extends BaseAdapter{
 
         @Override
@@ -104,16 +104,16 @@
 
 
 
-    上边是Fragment的使用。下边是 activity的使用，简单的一张图
-    需要说明的是activity里的控件长宽比列要和点击的原始控件长宽比例一样，否则，两者图片拉伸不一样，看起来就奇怪了，不推荐使用这个玩意
-
-
+    上边是Fragment的使用。下边是 activity的使用，简单的一张图＜/br＞
+    需要说明的是activity里的控件长宽比列要和点击的原始控件长宽比例一样，否则，两者图片拉伸不一样，看起来就奇怪了，不推荐使用这个玩意＜/br＞
+＜/br＞
+＜/br＞
     new  ActivityTransitionEnterHelper(MainActivity.this).fromView(view).
                           imageUrl(imgList.get(position)).start(PictureDetailsActivity.class);
+＜/br＞
+＜/br＞＜/br＞
 
-
-
-    对应的activity的使用
+    对应的activity的使用＜/br＞
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
