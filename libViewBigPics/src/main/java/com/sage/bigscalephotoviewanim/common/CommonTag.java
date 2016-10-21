@@ -11,4 +11,5 @@ public class CommonTag {
 
     public static final String TEMP_CACHE_DIR="temp_cache";
 
+    public static final  String TEMP_SAVE_PIC="SavePic";
 }

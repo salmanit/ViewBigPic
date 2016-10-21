@@ -7,7 +7,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0.7"
+        versionName "1.1.0"
     }
     buildTypes {
         release {
@@ -20,8 +20,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 //    testCompile 'junit:junit:4.12'
-        compile 'com.android.support:appcompat-v7:22.2.0'
-        compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
 }
 apply from: 'bintrayUpload.gradle'
 //apply from: "https://raw.githubusercontent.com/xiaopansky/android-library-publish-to-jcenter/master/bintrayUpload.gradle"

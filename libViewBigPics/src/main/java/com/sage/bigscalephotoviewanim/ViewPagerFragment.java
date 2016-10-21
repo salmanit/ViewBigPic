@@ -1,7 +1,10 @@
 package com.sage.bigscalephotoviewanim;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
@@ -11,21 +14,32 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.sage.bigscalephotoviewanim.common.CommonTag;
 import com.sage.bigscalephotoviewanim.common.CommonUtils;
 import com.sage.bigscalephotoviewanim.widget.ImageInfo;
 import com.sage.bigscalephotoviewanim.widget.MaterialProgressBar;
 import com.sage.bigscalephotoviewanim.widget.PhotoView;
 import com.sage.bigscalephotoviewanim.widget.ReboundViewPager;
+import com.sage.imagechooser.FragmentDiaChoose;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -48,6 +62,44 @@ public class ViewPagerFragment extends Fragment {
         ViewPagerFragment fragment = new ViewPagerFragment();
         fragment.setArguments(imgs);
         return fragment;
+    }
+    /**@param urls 图片地址集合
+     * @param infos 所有的图片info信息集合
+     * @param imageInfo 点击的图片信息
+     * @param  position 点击的图片索引*/
+    public static ViewPagerFragment getInstance(ArrayList<String> urls,ArrayList<ImageInfo> infos,ImageInfo imageInfo,int position) {
+        ViewPagerFragment fragment = new ViewPagerFragment();
+        Bundle imgs=new Bundle();
+        imgs.putStringArrayList(CommonTag.KEY_IMAGE_LIST,urls);
+        imgs.putParcelableArrayList(CommonTag.KEY_ALL_IMAGE_INFO, infos);
+        imgs.putParcelable(CommonTag.KEY_IMAGE_INFO,imageInfo);
+        imgs.putInt(CommonTag.KEY_CLICK_POSITION, position);
+        fragment.setArguments(imgs);
+        return fragment;
+    }
+    /**@param url 图片地址
+     * @param imageInfo 图片信息*/
+    public static ViewPagerFragment getInstance(String url,ImageInfo imageInfo) {
+        ViewPagerFragment fragment = new ViewPagerFragment();
+        Bundle imgs=new Bundle();
+        ArrayList<String> paths=new ArrayList<>();
+        paths.add(url);
+        imgs.putStringArrayList(CommonTag.KEY_IMAGE_LIST,paths);
+        imgs.putParcelable(CommonTag.KEY_IMAGE_INFO,imageInfo);
+        fragment.setArguments(imgs);
+        return fragment;
+    }
+    /**@param url 图片地址
+     * @param imageInfo 图片信息*/
+    public static void simpleShowBig(FragmentManager manager,String url,ImageInfo imageInfo){
+        manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT, ViewPagerFragment.getInstance(url,imageInfo),
+                "ViewPagerFragment")
+                .addToBackStack(null).commit();
+    }
+    public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,ImageInfo imageInfo,int position){
+        manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT, ViewPagerFragment.getInstance(urls,infos,imageInfo,position),
+                "ViewPagerFragment")
+                .addToBackStack(null).commit();
     }
 
     @Override
@@ -94,7 +146,7 @@ public class ViewPagerFragment extends Fragment {
             }
 
             @Override
-            public Object instantiateItem(ViewGroup container, int pos) {
+            public Object instantiateItem(ViewGroup container, final int pos) {
                 View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_view_detail, null, false);
                 final PhotoView photoView = (PhotoView) view.findViewById(R.id.image_detail);
                 final MaterialProgressBar progressBar = (MaterialProgressBar) view.findViewById(R.id.progress);
@@ -127,6 +179,23 @@ public class ViewPagerFragment extends Fragment {
                 photoView.requestFocus();
                 photoView.setOnKeyListener(pressKeyListener);//add key listener to listen back press
                 photoView.setOnClickListener(onClickListener);
+                final String finalPath = path;
+                photoView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        FragmentDiaChoose.create(0,getResources().getStringArray(R.array.lib_pic_save_cancel))
+                                .setmChooseListener(new FragmentDiaChoose.ChooseClickListener() {
+                                    @Override
+                                    public void click(int index, int tag) {
+                                        if(index==0){
+                                        saveToSDcard(finalPath,pos);
+                                        }
+                                    }
+                                })
+                                .show(getActivity().getSupportFragmentManager(),"save");
+                        return true;
+                    }
+                });
                 photoView.setTag(pos);
                 photoView.touchEnable(true);
                 container.addView(view);
@@ -159,7 +228,6 @@ public class ViewPagerFragment extends Fragment {
         //set current position
         viewPager.getOverscrollView().setCurrentItem(position);
     }
-
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -244,4 +312,61 @@ public class ViewPagerFragment extends Fragment {
         mask.startAnimation(alphaAnimation);
     }
 
+
+
+    public void saveToSDcard(String imageUrl,int position){
+        ImageLoader.getInstance().loadImage(imageUrl, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                String fileName = new HashCodeFileNameGenerator().generate(imageUri) + ".jpeg";
+                String path=new File(Environment.getExternalStorageDirectory(),CommonTag.TEMP_SAVE_PIC).getAbsolutePath();
+                File saveImageFile = saveFile(loadedImage, fileName,path);
+                if (saveImageFile!=null){
+                    Toast.makeText(getActivity(),String.format("%s%s/%s", "图片保存到", path, fileName),Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri uri = Uri.fromFile(saveImageFile);
+                    intent.setData(uri);
+                    getActivity().sendBroadcast(intent);//这个广播的目的就是更新图库，发了这个广播进入相册就可以找到你保存的图片了！，记得要传你更新的file哦
+                }
+                else Toast.makeText(getActivity(),"图片保存失败",Toast.LENGTH_SHORT).show();
+
+                //对bitmap进行垃圾回收
+                loadedImage.recycle();
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
+    }
+
+    private File saveFile(Bitmap bitmap, String fileName,String path){
+
+        try {
+            File file=new File(path);
+            if(!file.exists()){
+                file.mkdirs();
+            }
+            File save=new File(file,fileName);
+            boolean result=bitmap.compress(Bitmap.CompressFormat.PNG,100,new FileOutputStream(save));
+            if(result){
+                return save;
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

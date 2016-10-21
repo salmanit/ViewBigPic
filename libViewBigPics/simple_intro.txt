@@ -1,3 +1,14 @@
+
+version1.0.9修改内容如下
+ImageChooseUtils工具类修改，增加回调，可以自己处理图片的压缩比列，设置如下的回调
+   public static void setHandleOption(InterfaceHandleOption handleOption) {
+        ImageChooseUtils.handleOption = handleOption;
+    }
+ViewPagerFragment类增加几个静态方法，简化跳转的时候参数的传递。
+version1.1.0修改内容
+增加了photoview的长按事件，可以点击保存图片到本地。默认的文件路径为sdcard下savefile目录
+CommonTag.TEMP_SAVE_PIC 这个字段可以修改保存目录。
+
 # ViewBigPics
 点击小图看大图，并可以放大缩小
 

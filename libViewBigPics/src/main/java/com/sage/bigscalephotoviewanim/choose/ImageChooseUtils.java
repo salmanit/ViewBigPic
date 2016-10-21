@@ -59,6 +59,11 @@ public class ImageChooseUtils {
             return picPath;
         }
     }
+    public static InterfaceHandleOption handleOption;
+
+    public static void setHandleOption(InterfaceHandleOption handleOption) {
+        ImageChooseUtils.handleOption = handleOption;
+    }
 
     public static  String compressAndSaveImage(String fileImage, int scale) throws Exception {
 
@@ -109,7 +114,9 @@ public class ImageChooseUtils {
             } else {
                 options.inSampleSize = scale;
             }
-
+            if(handleOption!=null){
+                options.inSampleSize=handleOption.handleScale(fileImage,w,l);
+            }
             options.inJustDecodeBounds = false;
             bitmap = BitmapFactory.decodeFile(fileImage, options);
             File file=getSaveName(fileImage);
@@ -148,5 +155,6 @@ public class ImageChooseUtils {
                 file2.delete();
             }
         }
+        handleOption=null;
     }
 }

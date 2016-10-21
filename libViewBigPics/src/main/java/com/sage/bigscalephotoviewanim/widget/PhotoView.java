@@ -32,7 +32,7 @@ public class PhotoView extends ImageView {
     private GestureDetector mDetector;
     private ScaleGestureDetector mScaleDetector;
     private OnClickListener mClickListener;
-
+    private OnLongClickListener onLongClickListener;
     private ScaleType mScaleType;
 
     private boolean hasMultiTouch;
@@ -106,6 +106,11 @@ public class PhotoView extends ImageView {
 
         if (old != scaleType)
             initBase();
+    }
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
     }
 
     public void touchEnable(boolean isEnable) {
@@ -697,6 +702,14 @@ public class PhotoView extends ImageView {
         public boolean onSingleTapUp(MotionEvent e) {
             postDelayed(mClickRunnable, 250);
             return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+            if(onLongClickListener!=null){
+                onLongClickListener.onLongClick(PhotoView.this);
+            }
         }
 
         @Override
