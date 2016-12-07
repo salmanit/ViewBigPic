@@ -35,4 +35,9 @@
         <item>拍摄</item>
         <item>本地</item>
     </string-array>
+
+    <string-array name="array_pics_action">
+        <item>发送给朋友</item>
+        <item>保存图片</item>
+    </string-array>
 </resources>

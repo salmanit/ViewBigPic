@@ -5,6 +5,6 @@
     <string name="lib_ok_cancel_cancel">取消</string>
     <string name="lib_choose_title">图片</string>
     <string name="lib_choose_right">完成</string>
-    <string name="lib_delete_pic_title">移除提示</string>
-    <string name="lib_delete_pic_tips">放弃上传这张照片</string>
+    <string name="lib_delete_pic_title">提示</string>
+    <string name="lib_delete_pic_tips">确定要删除这张照片吗</string>
 </resources>

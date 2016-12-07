@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.sage.bigscalephotoviewanim.choose.InterfaceDelete;
+import com.sage.bigscalephotoviewanim.choose.InterfaceLongClickPhoto;
 import com.sage.bigscalephotoviewanim.common.CommonTag;
 import com.sage.bigscalephotoviewanim.common.CommonUtils;
 import com.sage.bigscalephotoviewanim.widget.ImageInfo;
@@ -60,7 +62,11 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
     private ImageInfo imageInfo;
     private View mask;//background view
     private ArrayList<ImageInfo> imageInfos;
-    private int position;
+
+    FrameLayout layout_status;//状态栏跟布局
+    ImageView iv_status_back;//后退键
+    FrameLayout layout_bottom;//最底层的父布局
+    private int positionCurrent;
     private boolean first=true;
     public static ViewPagerFragment getInstance(Bundle imgs) {
         ViewPagerFragment fragment = new ViewPagerFragment();
@@ -119,7 +125,23 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                 "ViewPagerFragment")
                 .addToBackStack(null).commit();
     }
+    public static void simpleShowBig(FragmentManager manager,String url,ImageInfo imageInfo,InterfaceLongClickPhoto interfaceLongClickPhoto){
+        manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
+                ViewPagerFragment.getInstance(url,imageInfo).setInterfaceLongClickPhoto(interfaceLongClickPhoto),
+                "ViewPagerFragment")
+                .addToBackStack(null).commit();
+    }
+    public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,ImageInfo imageInfo
+            ,int position,InterfaceLongClickPhoto interfaceLongClickPhoto){
+        manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
+                ViewPagerFragment.getInstance(urls,infos,imageInfo,position).setInterfaceLongClickPhoto(interfaceLongClickPhoto),
+                "ViewPagerFragment")
+                .addToBackStack(null).commit();
+    }
 
+    public String getCurrentPic(){
+        return imgs.get(positionCurrent);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_viewpager, null);
@@ -131,9 +153,17 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
         if(!ImageLoader.getInstance().isInited()){
             CommonUtils.initImageloader(getActivity());
         }
+        layout_bottom= (FrameLayout) view.findViewById(R.id.layout_bottom);
+        layout_status= (FrameLayout) view.findViewById(R.id.layout_status);
+        iv_status_back= (ImageView) view.findViewById(R.id.iv_status_back);
         iv_delete_pic= (ImageView) view.findViewById(R.id.iv_delete_pic);
         if(interfaceDelete!=null){
+            FrameLayout.LayoutParams params= (FrameLayout.LayoutParams) layout_status.getLayoutParams();
+            params.gravity= Gravity.TOP;
+            layout_status.setLayoutParams(params);
+            layout_status.setBackgroundResource(R.color.bg_title);
             iv_delete_pic.setVisibility(View.VISIBLE);
+            iv_status_back.setVisibility(View.VISIBLE);
             iv_delete_pic.setOnClickListener(this);
         }
         viewPager = (ReboundViewPager) view.findViewById(R.id.viewpager);
@@ -145,17 +175,22 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
 
         imgs = bundle.getStringArrayList(CommonTag.KEY_IMAGE_LIST);
         imageInfo = bundle.getParcelable(CommonTag.KEY_IMAGE_INFO);
+        if(imgs==null){
+            imgs=new ArrayList<>();
+        }
         if(imgs.size()==1){//for just one pic
             imageInfos=new ArrayList<>();
             imageInfos.add(imageInfo);
-            position=0;
+            positionCurrent=0;
             tips.setVisibility(View.GONE);
         }else{
             imageInfos = bundle.getParcelableArrayList(CommonTag.KEY_ALL_IMAGE_INFO);
-            position = bundle.getInt(CommonTag.KEY_CLICK_POSITION, 0);
+            positionCurrent = bundle.getInt(CommonTag.KEY_CLICK_POSITION, 0);
         }
-
-        tips.setText((position + 1) + "/" + imgs.size());
+        if(imageInfos==null){
+            imageInfos=new ArrayList<>();
+        }
+        tips.setText((positionCurrent + 1) + "/" + imgs.size());
 
         viewPager.getOverscrollView().setAdapter(adapter=new PagerAdapter() {
             @Override
@@ -180,7 +215,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                 View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_view_detail, container, false);
                 final PhotoView photoView = (PhotoView) view.findViewById(R.id.image_detail);
                 final MaterialProgressBar progressBar = (MaterialProgressBar) view.findViewById(R.id.progress);
-                if (first&&position == pos && ImageLoader.getInstance().getDiskCache().get(imgs.get(pos)) != null) {//only animate when position equals u click in pre layout
+                if (first&&positionCurrent == pos && ImageLoader.getInstance().getDiskCache().get(imgs.get(pos)) != null) {//only animate when position equals u click in pre layout
                     photoView.animateFrom(imageInfo);
                     first=false;
                 }
@@ -213,6 +248,10 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                 photoView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
+                        if(interfaceLongClickPhoto!=null){
+                            interfaceLongClickPhoto.onLongClick(finalPath);
+                            return true;
+                        }
                         FragmentDiaChoose.create(0,getResources().getStringArray(R.array.lib_pic_save_cancel))
                                 .setmChooseListener(new FragmentDiaChoose.ChooseClickListener() {
                                     @Override
@@ -246,6 +285,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
 
             @Override
             public void onPageSelected(int position) {
+                positionCurrent=position;
                 tips.setText((position + 1) + "/" + imgs.size());
             }
 
@@ -256,7 +296,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
         });
 
         //set current position
-        viewPager.getOverscrollView().setCurrentItem(position);
+        viewPager.getOverscrollView().setCurrentItem(positionCurrent);
     }
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -407,6 +447,12 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
         this.interfaceDelete=interfaceDelete;
         return this;
     }
+    public InterfaceLongClickPhoto interfaceLongClickPhoto;
+    //自己处理图片长按的事件
+    public ViewPagerFragment setInterfaceLongClickPhoto(InterfaceLongClickPhoto interfaceLongClickPhoto) {
+        this.interfaceLongClickPhoto = interfaceLongClickPhoto;
+        return this;
+    }
 
     @Override
     public void onClick(View v) {
@@ -424,7 +470,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
 
     }
 
-    private void deletePics(){
+    public void deletePics(){
         try {
             if(interfaceDelete!=null&&imgs.size()>0){
                 int current=viewPager.getOverscrollView().getCurrentItem();
@@ -448,4 +494,6 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
             Toast.makeText(getActivity(),"删除失败",Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }

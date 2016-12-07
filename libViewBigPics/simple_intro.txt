@@ -1,4 +1,5 @@
 
+详细使用请看demo，或者源码。
 version1.0.9修改内容如下
 ImageChooseUtils工具类修改，增加回调，可以自己处理图片的压缩比列，设置如下的回调
    public static void setHandleOption(InterfaceHandleOption handleOption) {
@@ -14,6 +15,12 @@ CommonTag.TEMP_SAVE_PIC 这个字段可以修改保存目录。
 增加一个预览大图的时候可以直接删除的按钮。
 @@@@version1.1.2
 修复删除按钮api21以下会跑到状态栏下边的问题。现在为了省事直接放最下边。
+增加长按图片接口，长按图片的事件可以自定义，
+
+
+
+
+
 
 # ViewBigPics
 点击小图看大图，并可以放大缩小
