@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     <RelativeLayout
+        android:id="@+id/lib_include_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/lib_title_height"
         android:background="@color/bg_title"
@@ -11,15 +12,12 @@
         <ImageView
             android:id="@+id/include_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingRight="10dp"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@drawable/lib_btn_back" />
         <TextView
+            android:id="@+id/include_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/lib_choose_title"

@@ -99,13 +99,14 @@ public class ActivityChoosePic extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_choose_pic);
         init();
     }
+    public View statusBarView;
     private void initStateBar(){
         final View decorView = getWindow().getDecorView();
-        View view = new View(this);
+         statusBarView = new View(this);
         final int statusBarHeight = getStatusBarHeight();
-        view.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight));
-        view.setBackgroundResource(R.color.bg_title);
-        ((ViewGroup)decorView).addView(view);
+        statusBarView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight));
+        statusBarView.setBackgroundResource(R.color.bg_title);
+        ((ViewGroup)decorView).addView(statusBarView);
     }
     public int getStatusBarHeight() {
         int result = 0;

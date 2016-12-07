@@ -5,9 +5,15 @@ ImageChooseUtils工具类修改，增加回调，可以自己处理图片的压�
         ImageChooseUtils.handleOption = handleOption;
     }
 ViewPagerFragment类增加几个静态方法，简化跳转的时候参数的传递。
-version1.1.0修改内容
+@@@@version1.1.0修改内容
 增加了photoview的长按事件，可以点击保存图片到本地。默认的文件路径为sdcard下savefile目录
 CommonTag.TEMP_SAVE_PIC 这个字段可以修改保存目录。
+
+
+@@@@version1.1.1修改内容。
+增加一个预览大图的时候可以直接删除的按钮。
+@@@@version1.1.2
+修复删除按钮api21以下会跑到状态栏下边的问题。现在为了省事直接放最下边。
 
 # ViewBigPics
 点击小图看大图，并可以放大缩小

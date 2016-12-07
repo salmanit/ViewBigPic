@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
@@ -19,6 +20,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.sage.bigscalephotoviewanim.choose.InterfaceDelete;
 import com.sage.bigscalephotoviewanim.common.CommonTag;
 import com.sage.bigscalephotoviewanim.common.CommonUtils;
 import com.sage.bigscalephotoviewanim.widget.ImageInfo;
@@ -36,6 +39,7 @@ import com.sage.bigscalephotoviewanim.widget.MaterialProgressBar;
 import com.sage.bigscalephotoviewanim.widget.PhotoView;
 import com.sage.bigscalephotoviewanim.widget.ReboundViewPager;
 import com.sage.imagechooser.FragmentDiaChoose;
+import com.sage.imagechooser.FragmentDiaOkCancel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,8 +52,8 @@ import java.util.ArrayList;
  * At 19:37
  * ViewPagerFragment add into MainActivity
  */
-public class ViewPagerFragment extends Fragment {
-
+public class ViewPagerFragment extends Fragment implements View.OnClickListener{
+    private ImageView iv_delete_pic;
     private ReboundViewPager viewPager;
     private TextView tips; //viewpager indicator
     private ArrayList<String> imgs;
@@ -96,8 +100,22 @@ public class ViewPagerFragment extends Fragment {
                 "ViewPagerFragment")
                 .addToBackStack(null).commit();
     }
-    public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,ImageInfo imageInfo,int position){
+    public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,
+                                     ImageInfo imageInfo,int position){
         manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT, ViewPagerFragment.getInstance(urls,infos,imageInfo,position),
+                "ViewPagerFragment")
+                .addToBackStack(null).commit();
+    }
+    public static void simpleShowBig(FragmentManager manager,String url,ImageInfo imageInfo,InterfaceDelete interfaceDelete){
+        manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
+                ViewPagerFragment.getInstance(url,imageInfo).setDeleteListener(interfaceDelete),
+                "ViewPagerFragment")
+                .addToBackStack(null).commit();
+    }
+    public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,ImageInfo imageInfo
+            ,int position,InterfaceDelete interfaceDelete){
+        manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
+                ViewPagerFragment.getInstance(urls,infos,imageInfo,position).setDeleteListener(interfaceDelete),
                 "ViewPagerFragment")
                 .addToBackStack(null).commit();
     }
@@ -106,12 +124,17 @@ public class ViewPagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_viewpager, null);
     }
-
+    private PagerAdapter adapter;
     @Override
     public void onViewCreated(View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(!ImageLoader.getInstance().isInited()){
             CommonUtils.initImageloader(getActivity());
+        }
+        iv_delete_pic= (ImageView) view.findViewById(R.id.iv_delete_pic);
+        if(interfaceDelete!=null){
+            iv_delete_pic.setVisibility(View.VISIBLE);
+            iv_delete_pic.setOnClickListener(this);
         }
         viewPager = (ReboundViewPager) view.findViewById(R.id.viewpager);
         tips = (TextView) view.findViewById(R.id.text);
@@ -134,12 +157,19 @@ public class ViewPagerFragment extends Fragment {
 
         tips.setText((position + 1) + "/" + imgs.size());
 
-        viewPager.getOverscrollView().setAdapter(new PagerAdapter() {
+        viewPager.getOverscrollView().setAdapter(adapter=new PagerAdapter() {
             @Override
             public int getCount() {
                 return imgs.size();
             }
-
+            @Override
+            public int getItemPosition(Object object) {
+                if(interfaceDelete!=null){
+                    return POSITION_NONE;
+                }else{
+                    return  POSITION_UNCHANGED;
+                }
+            }
             @Override
             public boolean isViewFromObject(View view, Object object) {
                 return view == object;
@@ -147,7 +177,7 @@ public class ViewPagerFragment extends Fragment {
 
             @Override
             public Object instantiateItem(ViewGroup container, final int pos) {
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_view_detail, null, false);
+                View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_view_detail, container, false);
                 final PhotoView photoView = (PhotoView) view.findViewById(R.id.image_detail);
                 final MaterialProgressBar progressBar = (MaterialProgressBar) view.findViewById(R.id.progress);
                 if (first&&position == pos && ImageLoader.getInstance().getDiskCache().get(imgs.get(pos)) != null) {//only animate when position equals u click in pre layout
@@ -368,5 +398,54 @@ public class ViewPagerFragment extends Fragment {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public InterfaceDelete interfaceDelete;
+    //增加删除按钮的回调事件
+    public ViewPagerFragment setDeleteListener(InterfaceDelete interfaceDelete){
+
+        this.interfaceDelete=interfaceDelete;
+        return this;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId()==R.id.iv_delete_pic){//删除图片按钮
+
+            FragmentDiaOkCancel.create(getString(R.string.lib_delete_pic_title),getString(R.string.lib_delete_pic_tips))
+                    .setListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deletePics();
+                        }
+                    }).show(getActivity().getSupportFragmentManager(),"showAlert");
+
+        }
+
+    }
+
+    private void deletePics(){
+        try {
+            if(interfaceDelete!=null&&imgs.size()>0){
+                int current=viewPager.getOverscrollView().getCurrentItem();
+                interfaceDelete.delete(current,imgs.get(current));
+                imgs.remove(current);
+                imageInfos.remove(imageInfos.size()-1);
+                adapter.notifyDataSetChanged();
+                if(adapter.getCount()==0){
+                    popFragment();
+                }else{
+                    if(current>0){
+                        if(current==imgs.size()){
+                            current-=1;
+                        }
+                    }
+                    tips.setText((current + 1) + "/" + imgs.size());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(),"删除失败",Toast.LENGTH_SHORT).show();
+        }
     }
 }

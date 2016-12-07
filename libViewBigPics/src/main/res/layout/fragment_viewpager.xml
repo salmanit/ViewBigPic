@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
@@ -15,17 +16,40 @@
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
+<FrameLayout
+    android:layout_gravity="bottom"
+    android:background="@color/library_big_scale_text_bg_color"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
         android:text="1/9"
         android:gravity="center"
         android:padding="5dp"
-        android:background="@color/library_big_scale_text_bg_color"
         android:textColor="@color/library_big_scale_text_color"
         android:textSize="20sp"
         android:id="@+id/text"
         />
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_delete_pic"
+        android:layout_marginRight="10dp"
+        android:padding="8dp"
+        android:layout_gravity="right|center_vertical"
+        android:src="@drawable/lib_icon_delete_normal"
+        android:background="@drawable/lib_shape_circle_gray"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:padding="8dp"
+        android:layout_gravity="right"
+        android:src="@drawable/lib_icon_delete_normal"
+        android:background="@drawable/lib_shape_circle_gray"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+</FrameLayout>
+
 </FrameLayout>
