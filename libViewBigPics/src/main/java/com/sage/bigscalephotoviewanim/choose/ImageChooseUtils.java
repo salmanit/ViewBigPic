@@ -115,7 +115,10 @@ public class ImageChooseUtils {
                 options.inSampleSize = scale;
             }
             if(handleOption!=null){
-                options.inSampleSize=handleOption.handleScale(fileImage,w,l);
+                int custom=handleOption.handleScale(fileImage,w,l);
+                if(custom>0){
+                    options.inSampleSize=custom;
+                }
             }
             options.inJustDecodeBounds = false;
             bitmap = BitmapFactory.decodeFile(fileImage, options);

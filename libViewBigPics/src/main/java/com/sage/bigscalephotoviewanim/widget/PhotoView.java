@@ -415,7 +415,12 @@ public class PhotoView extends ImageView {
             height = p.height == ViewGroup.LayoutParams.MATCH_PARENT ? height : (int) (drawableH * scale);
         }
 
-        setMeasuredDimension(width, height);
+
+        if(mAdjustViewBounds){
+            super.onMeasure(widthMeasureSpec,heightMeasureSpec);
+        }else{
+            setMeasuredDimension(width, height);
+        }
     }
 
     @Override

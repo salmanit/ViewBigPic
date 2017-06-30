@@ -2,7 +2,9 @@ package com.sage.bigscalephotoviewanim;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -138,6 +140,20 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                 "ViewPagerFragment")
                 .addToBackStack(null).commit();
     }
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+    public boolean needPadding=false;
+
+    public ViewPagerFragment setNeedPadding(boolean needPadding) {
+        this.needPadding = needPadding;
+        return this;
+    }
 
     public String getCurrentPic(){
         return imgs.get(positionCurrent);
@@ -160,11 +176,17 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
         if(interfaceDelete!=null){
             FrameLayout.LayoutParams params= (FrameLayout.LayoutParams) layout_status.getLayoutParams();
             params.gravity= Gravity.TOP;
+            if(needPadding&&Build.VERSION.SDK_INT<21&& Build.VERSION.SDK_INT>=19){
+                layout_bottom.setPadding(0,getStatusBarHeight(),0,0);
+            }
+            layout_status.setFitsSystemWindows(true);
             layout_status.setLayoutParams(params);
             layout_status.setBackgroundResource(R.color.bg_title);
             iv_delete_pic.setVisibility(View.VISIBLE);
             iv_status_back.setVisibility(View.VISIBLE);
+            iv_status_back.setOnClickListener(this);
             iv_delete_pic.setOnClickListener(this);
+            layout_status.setOnClickListener(this);
         }
         viewPager = (ReboundViewPager) view.findViewById(R.id.viewpager);
         tips = (TextView) view.findViewById(R.id.text);
@@ -182,7 +204,8 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
             imageInfos=new ArrayList<>();
             imageInfos.add(imageInfo);
             positionCurrent=0;
-            tips.setVisibility(View.GONE);
+            if(interfaceDelete==null)
+                layout_status.setVisibility(View.GONE);
         }else{
             imageInfos = bundle.getParcelableArrayList(CommonTag.KEY_ALL_IMAGE_INFO);
             positionCurrent = bundle.getInt(CommonTag.KEY_CLICK_POSITION, 0);
@@ -248,6 +271,11 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                 photoView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
+//                        ImageView iv= (ImageView) v;
+//                        Drawable drawable=iv.getDrawable();
+//                        if(drawable==null){
+//                            return true;
+//                        }
                         if(interfaceLongClickPhoto!=null){
                             interfaceLongClickPhoto.onLongClick(finalPath);
                             return true;
@@ -266,6 +294,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                     }
                 });
                 photoView.setTag(pos);
+                System.out.println(pos+"/"+positionCurrent+"===555===="+imageInfos.get(pos).mLocalRect.toString());
                 photoView.touchEnable(true);
                 container.addView(view);
                 return view;
@@ -314,6 +343,10 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
             popFragment();
         }else {
             runExitAnimation(v);
+            for(int i=0;i<imageInfos.size();i++){
+                ImageInfo imageInfo=imageInfos.get(i);
+                System.out.println("i="+i+"/"+position+"===555==="+imageInfo.mLocalRect.toString());
+            }
             ((PhotoView) v).animateTo(imageInfos.get(position), new Runnable() {
                 @Override
                 public void run() {
@@ -398,7 +431,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 
-                String fileName = new HashCodeFileNameGenerator().generate(imageUri) + ".jpeg";
+                String fileName = new HashCodeFileNameGenerator().generate(imageUri) + ".jpg";
                 String path=new File(Environment.getExternalStorageDirectory(),CommonTag.TEMP_SAVE_PIC).getAbsolutePath();
                 File saveImageFile = saveFile(loadedImage, fileName,path);
                 if (saveImageFile!=null){
@@ -466,6 +499,23 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                         }
                     }).show(getActivity().getSupportFragmentManager(),"showAlert");
 
+        }else if(v.getId()==R.id.iv_status_back){
+            try {
+                int current=viewPager.getOverscrollView().getCurrentItem();
+                for(int i=0;i<viewPager.getOverscrollView().getChildCount();i++){
+                    View view=viewPager.getOverscrollView().getChildAt(i).findViewById(R.id.image_detail);
+                    if(view.getTag()!=null){
+                        int tag= (int) view.getTag();
+                        if(tag==current){
+                            exitFragment(view);
+                            break;
+                        }
+                    }
+                }
+//                exitFragment(viewPager.getOverscrollView().getChildAt(viewPager.getOverscrollView().getCurrentItem()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -474,11 +524,10 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
         try {
             if(interfaceDelete!=null&&imgs.size()>0){
                 int current=viewPager.getOverscrollView().getCurrentItem();
-                interfaceDelete.delete(current,imgs.get(current));
-                imgs.remove(current);
+                interfaceDelete.delete(current,imgs.remove(current));
                 imageInfos.remove(imageInfos.size()-1);
                 adapter.notifyDataSetChanged();
-                if(adapter.getCount()==0){
+                if(imgs.size()==0){
                     popFragment();
                 }else{
                     if(current>0){

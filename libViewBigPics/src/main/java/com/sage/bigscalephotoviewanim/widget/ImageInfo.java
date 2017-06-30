@@ -11,12 +11,12 @@ import android.widget.ImageView;
  * At 19:37
  */
 public class ImageInfo implements Parcelable{
-    RectF mRect = new RectF();
-    RectF mLocalRect = new RectF();
-    RectF mImgRect = new RectF();
-    RectF mWidgetRect = new RectF();
-    float mScale;
-    ImageView.ScaleType mScaleType;
+    public RectF mRect = new RectF();
+    public RectF mLocalRect = new RectF();
+    public RectF mImgRect = new RectF();
+    public RectF mWidgetRect = new RectF();
+    public float mScale;
+    public ImageView.ScaleType mScaleType;
     public ImageInfo() {
     }
 

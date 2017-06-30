@@ -48,23 +48,62 @@ public class FragmentDiaOkCancel extends DialogFragment implements OnClickListen
 	private static String tag_content="content";
 	private static String tag_ok="ok";
 	private static String tag_cancel="cancel";
+	private int colorTitle;
+	private int colorContent;
+	private int colorOK;
+	private int colorCancel;
+
+	public FragmentDiaOkCancel setColorTitle(int colorTitle) {
+		this.colorTitle = colorTitle;
+		return this;
+	}
+
+	public FragmentDiaOkCancel setColorContent(int colorContent) {
+		this.colorContent = colorContent;
+		return this;
+	}
+
+	public FragmentDiaOkCancel setColorOK(int colorOK) {
+		this.colorOK = colorOK;
+		return this;
+	}
+
+	public FragmentDiaOkCancel setColorCancel(int colorCancel) {
+		this.colorCancel = colorCancel;
+		return this;
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view=inflater.inflate(R.layout.okcancel_dialog_fragment, container,false);
 		initView(view);
-		if(!TextUtils.isEmpty(getArguments().getString(tag_title))){
-			tv_title.setText(getArguments().getString(tag_title));
-			tv_title.setVisibility(View.VISIBLE);
+		if(getArguments()!=null){
+			if(!TextUtils.isEmpty(getArguments().getString(tag_title))){
+				tv_title.setText(getArguments().getString(tag_title));
+				tv_title.setVisibility(View.VISIBLE);
+			}
+			if(!TextUtils.isEmpty(getArguments().getString(tag_content))){
+				tv_content.setText(getArguments().getString(tag_content));
+				tv_content.setVisibility(View.VISIBLE);
+			}
+			if(!TextUtils.isEmpty(getArguments().getString(tag_ok))){
+				tv_ok.setText(getArguments().getString(tag_ok));
+			}
+			if(!TextUtils.isEmpty(getArguments().getString(tag_cancel))){
+				tv_cancel.setText(getArguments().getString(tag_cancel));
+			}
 		}
-		if(!TextUtils.isEmpty(getArguments().getString(tag_content))){
-			tv_content.setText(getArguments().getString(tag_content));
-			tv_content.setVisibility(View.VISIBLE);
+		if(colorTitle>0){
+			tv_title.setTextColor(colorTitle);
 		}
-		if(!TextUtils.isEmpty(getArguments().getString(tag_ok))){
-			tv_ok.setText(getArguments().getString(tag_ok));
+		if(colorContent>0){
+			tv_content.setTextColor(colorContent);
 		}
-		if(!TextUtils.isEmpty(getArguments().getString(tag_cancel))){
-			tv_cancel.setText(getArguments().getString(tag_cancel));
+		if(colorCancel>0){
+			tv_cancel.setTextColor(colorCancel);
+		}
+		if(colorOK>0){
+			tv_ok.setTextColor(colorOK);
 		}
 		return view;
 	}

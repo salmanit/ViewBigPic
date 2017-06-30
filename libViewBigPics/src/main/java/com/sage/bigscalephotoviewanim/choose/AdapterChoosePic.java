@@ -10,6 +10,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sage.bigscalephotoviewanim.R;
 
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -18,13 +19,11 @@ import java.util.List;
 public class AdapterChoosePic extends BaseAdapter {
 
 
-    private List<String> names;
-    private String dir;
+    private List<File> names;
     private ActivityChoosePic  activity;
 
-    public AdapterChoosePic(List<String> names, String dir, ActivityChoosePic activity) {
+    public AdapterChoosePic(List<File> names, ActivityChoosePic activity) {
         this.names = names;
-        this.dir = dir;
         this.activity = activity;
     }
 
@@ -34,7 +33,7 @@ public class AdapterChoosePic extends BaseAdapter {
     }
 
     @Override
-    public String getItem(int position) {
+    public File getItem(int position) {
         return names.get(position);
     }
 
@@ -50,7 +49,7 @@ public class AdapterChoosePic extends BaseAdapter {
         }
         final ImageView iv_show= (ImageView) convertView.findViewById(R.id.iv_show);
         final ImageView iv_state= (ImageView) convertView.findViewById(R.id.iv_state);
-        final String path=dir+getItem(position);
+        final String path=getItem(position).getAbsolutePath();
 
       try {
           ImageLoader.getInstance().displayImage("file://" + path, iv_show);

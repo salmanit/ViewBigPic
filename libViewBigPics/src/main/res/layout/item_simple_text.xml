@@ -3,7 +3,7 @@
 android:gravity="center"
 android:layout_width="match_parent"
 android:layout_height="50dp"
-android:textColor="@color/bg_title"
+android:textColor="@color/lib_dia_choose_item_txt"
 android:background="@drawable/selector_white_gray"
 
  />

@@ -15,4 +15,8 @@
     <color name="lib_ok_cancel_content">#000000</color>
     <color name="lib_ok_cancel_ok_text">#0000ff</color>
     <color name="lib_ok_cancel_cancel_text">#0000ff</color>
+
+    <color name="lib_dia_choose_bg">#00000000</color>
+    <color name="lib_dia_choose_cancel_color">#000000</color>
+    <color name="lib_dia_choose_item_txt">#000000</color>
 </resources>

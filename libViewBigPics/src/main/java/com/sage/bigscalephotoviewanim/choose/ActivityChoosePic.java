@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -233,7 +236,7 @@ public class ActivityChoosePic extends AppCompatActivity implements View.OnClick
                         MediaStore.Images.Media.MIME_TYPE + "=? or "
                                 + MediaStore.Images.Media.MIME_TYPE + "=?",
                         new String[]{"image/jpeg", "image/png"},
-                        MediaStore.Images.Media.DATE_MODIFIED);
+                        MediaStore.Images.Media.DATE_MODIFIED+" desc ");
 
                 while (mCursor.moveToNext())
                 {
@@ -334,10 +337,30 @@ public class ActivityChoosePic extends AppCompatActivity implements View.OnClick
 
     private AdapterChoosePic adapter;
     private void updateGridView(){
-        adapter=new AdapterChoosePic(Arrays.asList(mImgDir.list(filter)),mImgDir.getAbsolutePath()+"/",this);
+        List<File> files=Arrays.asList(mImgDir.listFiles(filter));
+        Collections.sort(files,new ModifiedTimeSort());
+        adapter=new AdapterChoosePic(files,this);
         idGridView.setAdapter(adapter);
     }
 
+    class ModifiedTimeSort implements Comparator<File> {
+
+
+        @Override
+        public int compare(File lhs, File rhs) {
+            if(lhs.lastModified()>rhs.lastModified()){
+                return -1;
+            }else if(lhs.lastModified()<rhs.lastModified()){
+                return 1;
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return false;
+        }
+    }
     private Toast toast;
     public void showToast(String msg){
         if(toast!=null){

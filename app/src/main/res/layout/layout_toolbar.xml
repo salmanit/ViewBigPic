@@ -9,8 +9,7 @@
     android:id="@+id/toolbar"
     android:layout_width="fill_parent"
     android:layout_height="50dp"
-    android:layout_alignParentTop="true"
-    android:background="@color/colorPrimary">
+    android:layout_alignParentTop="true">
     <ImageView
         android:id="@+id/toolbar_back"
         android:layout_width="40dp"
@@ -25,8 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:singleLine="true"
-        android:textColor="@color/white"
+        android:textColor="#215980"
         android:textSize="18sp"
+        android:text="title"
         tools:text="title" />
 
     <TextView

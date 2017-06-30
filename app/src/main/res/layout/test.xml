@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/layout_toolbar"/>
@@ -23,10 +24,28 @@
         android:layout_height="wrap_content"
         android:text="多图选择"
         android:id="@+id/more_pics" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh"
+        android:id="@+id/btn_refresh" />
 </LinearLayout>
-
-
+        <EditText
+            android:id="@+id/et_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    <com.sage.bigscalephotoviewanim.widget.PhotoView
+        android:id="@+id/pv_test"
+        android:src="@mipmap/aaa"
+        android:adjustViewBounds="true"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp" />
+    <View
+        android:background="#ff0000"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
     <FrameLayout
+        android:visibility="gone"
         android:id="@+id/layout"
         android:gravity="center"
         android:orientation="vertical"
@@ -39,7 +58,19 @@
         </FrameLayout>
     <GridView
         android:id="@+id/gv"
-        android:numColumns="3"
+        android:visibility="gone"
+        android:numColumns="4"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="200dp"
+        android:layout_height="200dp"/>
+    <ImageView
+        android:src="@mipmap/aaa"
+        android:scaleType="centerCrop"
+        android:paddingTop="2dp"
+        android:paddingRight="2dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
 </LinearLayout>

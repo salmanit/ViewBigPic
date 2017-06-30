@@ -20,9 +20,14 @@ import java.util.List;
  * Created by Sage on 2015/7/27.
  */
 public class FragmentDiaChoose extends DialogFragment implements View.OnClickListener{
+    View layout_bg;
     ListView lv_choose;
+    TextView tv_cancel;
     private int tag;//主要防止同一个页面多次调用这个，区分点击的是哪个
     String[] data;
+    public int itemTxtColor;//列表文字颜色
+    public int cancelTxtColor;//取消文字颜色
+    public int bgColor;//背景颜色
     /**0，默认的文字是相机相册，1男女的选择*/
     public static FragmentDiaChoose create(int tag,String[] data){
         FragmentDiaChoose fragment=new FragmentDiaChoose();
@@ -44,6 +49,21 @@ public class FragmentDiaChoose extends DialogFragment implements View.OnClickLis
         return fragment;
     }
 
+    public FragmentDiaChoose setItemTxtColor(int itemTxtColor) {
+        this.itemTxtColor = itemTxtColor;
+        return this;
+    }
+
+    public FragmentDiaChoose setCancelTxtColor(int cancelTxtColor) {
+        this.cancelTxtColor = cancelTxtColor;
+        return this;
+    }
+
+    public FragmentDiaChoose setBgColor(int bgColor) {
+        this.bgColor = bgColor;
+        return this;
+    }
+
     public FragmentDiaChoose() {
         setStyle(STYLE_NO_TITLE, R.style.MyCustomTheme);//取消标题
     }
@@ -53,6 +73,8 @@ public class FragmentDiaChoose extends DialogFragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_dia_choose, container, false);
         lv_choose= (ListView) view.findViewById(R.id.lv_choose);
+        tv_cancel= (TextView) view.findViewById(R.id.tv_cancel);
+        layout_bg=view.findViewById(R.id.layout_dia_choose);
         return view;
     }
 
@@ -70,6 +92,13 @@ public class FragmentDiaChoose extends DialogFragment implements View.OnClickLis
                 dismiss();
             }
         });
+        if(cancelTxtColor!=0){
+            tv_cancel.setTextColor(cancelTxtColor);
+        }
+        if(bgColor!=0){
+            layout_bg.setBackgroundColor(bgColor);
+        }
+        System.out.println("============="+cancelTxtColor+"==="+bgColor+"====="+itemTxtColor);
     }
     @Override
     public void onActivityCreated(Bundle arg0) {
@@ -136,6 +165,9 @@ public class FragmentDiaChoose extends DialogFragment implements View.OnClickLis
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView==null){
                 convertView=LayoutInflater.from(parent.getContext()).inflate(R.layout.item_simple_text,parent,false);
+                if(itemTxtColor!=0){
+                    ((TextView)convertView).setTextColor(itemTxtColor);
+                }
             }
             ((TextView)convertView).setText(data[position]);
             return convertView;
