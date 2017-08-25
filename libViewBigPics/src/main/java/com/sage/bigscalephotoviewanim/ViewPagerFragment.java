@@ -239,7 +239,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                 final PhotoView photoView = (PhotoView) view.findViewById(R.id.image_detail);
                 final MaterialProgressBar progressBar = (MaterialProgressBar) view.findViewById(R.id.progress);
                 if (first&&positionCurrent == pos && ImageLoader.getInstance().getDiskCache().get(imgs.get(pos)) != null) {//only animate when position equals u click in pre layout
-                    photoView.animateFrom(imageInfo);
+                    photoView.animaFrom(imageInfo);
                     first=false;
                 }
                 //load pic from remote
@@ -294,8 +294,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                     }
                 });
                 photoView.setTag(pos);
-                System.out.println(pos+"/"+positionCurrent+"===555===="+imageInfos.get(pos).mLocalRect.toString());
-                photoView.touchEnable(true);
+                photoView.enable();
                 container.addView(view);
                 return view;
             }
@@ -345,9 +344,8 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
             runExitAnimation(v);
             for(int i=0;i<imageInfos.size();i++){
                 ImageInfo imageInfo=imageInfos.get(i);
-                System.out.println("i="+i+"/"+position+"===555==="+imageInfo.mLocalRect.toString());
             }
-            ((PhotoView) v).animateTo(imageInfos.get(position), new Runnable() {
+            ((PhotoView) v).animaTo(imageInfos.get(position), new Runnable() {
                 @Override
                 public void run() {
                     popFragment();

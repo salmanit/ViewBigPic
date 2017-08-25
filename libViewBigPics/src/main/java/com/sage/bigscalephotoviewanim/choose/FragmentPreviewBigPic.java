@@ -78,7 +78,7 @@ public class FragmentPreviewBigPic extends Fragment {
                 PhotoView photoView=new PhotoView(container.getContext());
                 photoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 ImageLoader.getInstance().displayImage("file://" + pics.get(pos), photoView);
-                photoView.touchEnable(true);
+                photoView.enable();
                 photoView.setOnClickListener(onClickListener);
                 container.addView(photoView);
 
