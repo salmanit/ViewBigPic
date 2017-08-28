@@ -2,12 +2,10 @@ package com.sage.bigscalephotoviewanim;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
@@ -26,14 +24,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.sage.bigscalephotoviewanim.choose.InterfaceDelete;
 import com.sage.bigscalephotoviewanim.choose.InterfaceLongClickPhoto;
 import com.sage.bigscalephotoviewanim.common.CommonTag;
@@ -44,9 +40,7 @@ import com.sage.bigscalephotoviewanim.widget.PhotoView;
 import com.sage.bigscalephotoviewanim.widget.ReboundViewPager;
 import com.sage.imagechooser.FragmentDiaChoose;
 import com.sage.imagechooser.FragmentDiaOkCancel;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
@@ -106,39 +100,39 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
     public static void simpleShowBig(FragmentManager manager,String url,ImageInfo imageInfo){
         manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT, ViewPagerFragment.getInstance(url,imageInfo),
                 "ViewPagerFragment")
-                .addToBackStack(null).commit();
+                .addToBackStack(ViewPagerFragment.class.getSimpleName()).commit();
     }
     public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,
                                      ImageInfo imageInfo,int position){
         manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT, ViewPagerFragment.getInstance(urls,infos,imageInfo,position),
                 "ViewPagerFragment")
-                .addToBackStack(null).commit();
+                .addToBackStack(ViewPagerFragment.class.getSimpleName()).commit();
     }
     public static void simpleShowBig(FragmentManager manager,String url,ImageInfo imageInfo,InterfaceDelete interfaceDelete){
         manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
                 ViewPagerFragment.getInstance(url,imageInfo).setDeleteListener(interfaceDelete),
                 "ViewPagerFragment")
-                .addToBackStack(null).commit();
+                .addToBackStack(ViewPagerFragment.class.getSimpleName()).commit();
     }
     public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,ImageInfo imageInfo
             ,int position,InterfaceDelete interfaceDelete){
         manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
                 ViewPagerFragment.getInstance(urls,infos,imageInfo,position).setDeleteListener(interfaceDelete),
                 "ViewPagerFragment")
-                .addToBackStack(null).commit();
+                .addToBackStack(ViewPagerFragment.class.getSimpleName()).commit();
     }
     public static void simpleShowBig(FragmentManager manager,String url,ImageInfo imageInfo,InterfaceLongClickPhoto interfaceLongClickPhoto){
         manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
                 ViewPagerFragment.getInstance(url,imageInfo).setInterfaceLongClickPhoto(interfaceLongClickPhoto),
                 "ViewPagerFragment")
-                .addToBackStack(null).commit();
+                .addToBackStack(ViewPagerFragment.class.getSimpleName()).commit();
     }
     public static void simpleShowBig(FragmentManager manager,ArrayList<String> urls,ArrayList<ImageInfo> infos,ImageInfo imageInfo
             ,int position,InterfaceLongClickPhoto interfaceLongClickPhoto){
         manager.beginTransaction().replace(Window.ID_ANDROID_CONTENT,
                 ViewPagerFragment.getInstance(urls,infos,imageInfo,position).setInterfaceLongClickPhoto(interfaceLongClickPhoto),
                 "ViewPagerFragment")
-                .addToBackStack(null).commit();
+                .addToBackStack(ViewPagerFragment.class.getSimpleName()).commit();
     }
     public int getStatusBarHeight() {
         int result = 0;
@@ -342,9 +336,6 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
             popFragment();
         }else {
             runExitAnimation(v);
-            for(int i=0;i<imageInfos.size();i++){
-                ImageInfo imageInfo=imageInfos.get(i);
-            }
             ((PhotoView) v).animaTo(imageInfos.get(position), new Runnable() {
                 @Override
                 public void run() {

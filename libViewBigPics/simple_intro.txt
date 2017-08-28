@@ -29,7 +29,7 @@ CommonTag.TEMP_SAVE_PIC 这个字段可以修改保存目录。
 增加InterfaceHandleOption的结果处理，如果返回-1，表示按默认的处理，只有结果大于0才有效果
 修改图片的显示顺序，按照时间排序，最新的显示在第一个位置
 
-@@version1.1.7 未发布
+@@version1.1.7 未发布，替换photoview为最新的，支持旋转，
 
 
 

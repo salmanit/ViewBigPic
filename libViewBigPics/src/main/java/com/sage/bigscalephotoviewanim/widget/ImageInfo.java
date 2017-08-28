@@ -50,7 +50,6 @@ public class ImageInfo implements Parcelable{
         mScale = in.readFloat();
         mDegrees = in.readFloat();
         mScaleType =ImageView.ScaleType.values()[in.readInt()];
-//        mScaleType = (ImageView.ScaleType) in.readValue(ImageView.ScaleType.class.getClassLoader());
     }
 
     public static final Creator<ImageInfo> CREATOR = new Creator<ImageInfo>() {
