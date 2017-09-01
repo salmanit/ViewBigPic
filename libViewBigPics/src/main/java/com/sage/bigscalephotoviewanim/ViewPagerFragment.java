@@ -239,7 +239,7 @@ public class ViewPagerFragment extends Fragment implements View.OnClickListener{
                 //load pic from remote
                 String path=imgs.get(pos);
                 if(!TextUtils.isEmpty(path)){
-                    if(path.startsWith("http://")||path.startsWith("file://")||path.startsWith("assets://")
+                    if(path.startsWith("http://")||path.startsWith("https://")||path.startsWith("file://")||path.startsWith("assets://")
                             ||path.startsWith("drawable://")||path.startsWith("content://")){
 
                     }else{
